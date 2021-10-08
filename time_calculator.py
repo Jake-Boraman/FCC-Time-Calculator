@@ -7,20 +7,22 @@ def main():
     #day = input()
 
     # Temp params
-    start = "5:01 AM"
-    duration = "0:00"
-    day = "none"
+    start = "11:59 PM"
+    duration = "24:05"
+    day = "null"
 
     print(add_time(start, duration, day))
 
 
 def add_time(start, duration, day="null"):
+    weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     tempHour = ""
     tempMins = ""
     new_time = ""
     addHour = ""
     days = 0
     dayChange = False
+    newDayOfWeek = ""
 
     currentTimeType = ""
     if "AM" in start:
@@ -37,12 +39,25 @@ def add_time(start, duration, day="null"):
     addMinutes = duration[addColonLoc+1:addColonLoc+3]
     if(int(addHourTemp) == 0 and int(addMinutes) == 0):
         return start
-    if(addHourTemp >= 24):
+    if(addHourTemp >= 24 and int(addMinutes) != 0):
         days = (addHourTemp // 24) + 1
         addHour = addHourTemp - ((days-1) * 24)
         dayChange = True
+    elif(addHourTemp == 24):
+        days = (addHourTemp // 24)
+        addHour = addHourTemp - ((days) * 24)
+        dayChange = True
     else:
         addHour = addHourTemp
+
+    if(day != "null"):
+        dayOfWeek = weekdays.index(day.lower().capitalize())
+        partOfWeek = days % 7
+        dayOfWeek += partOfWeek
+        if(dayOfWeek >= 7):
+            dayOfWeek -= 7
+        newDayOfWeek = weekdays[dayOfWeek]
+    
     
 
     if((int(currentHour) + int(addHour) > 12) or (int(currentMinutes) + int(addMinutes) >= 60)):
@@ -71,6 +86,9 @@ def add_time(start, duration, day="null"):
 
         new_time += " "
         new_time += currentTimeType
+        if(day != "null"):
+            new_time += ", "
+            new_time += newDayOfWeek
         if(days > 1):
             new_time += " ("
             new_time += str(days)
@@ -83,6 +101,9 @@ def add_time(start, duration, day="null"):
         new_time += str(int(currentMinutes) + int(addMinutes))
         new_time += " "
         new_time += currentTimeType
+        if(day != "null"):
+            new_time += ", "
+            new_time += newDayOfWeek
         if(dayChange == True):
             new_time += " (next day)"
         return new_time
